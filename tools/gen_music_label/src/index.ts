@@ -3,7 +3,7 @@ import * as fs from 'fs/promises'
 const sinsyFullContextLabelPattern = /^([0-9]+) [0-9]+ [a-z]+@[a-zA-Z]+\^[a-zA-Z]+\-([a-zA-Z]+)\+.+\/E:(xx|[A-G]b?[0-9])/
 const timeCoefficient = 1.0e-7
 
-const prefix = '../../'
+const prefix = '../..'
 
 const noteSteps = 'C_D_EF_G_A_B'
 
@@ -65,7 +65,7 @@ const main = async () => {
   for (let i = 1, total = 50; i <= total; ++i) {
     const idx = `${i}`.padStart(2, '0')
     const fullContextLabelPath = `${prefix}/mono_label_generated/${idx}.lab`
-    const processedLabelPath = `${prefix}/mono_label_with_lyrics/${idx}.txt`
+    const processedLabelPath = `${prefix}/mono_label_with_note/${idx}.txt`
 
     console.log(`${idx}/${total}`)
 
