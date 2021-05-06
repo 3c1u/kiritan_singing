@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises'
 
-const sinsyFullContextLabelPattern = /^([0-9]+) [0-9]+ [a-z]+@[a-zA-Z]+\^[a-zA-Z]+\-([a-zA-Z]+)\+.+\/D:(xx|[A-G]b?[0-9])/
+const sinsyFullContextLabelPattern = /^([0-9]+) [0-9]+ [a-z]+@[a-zA-Z]+\^[a-zA-Z]+\-([a-zA-Z]+)\+.+\/E:(xx|[A-G]b?[0-9])/
 const timeCoefficient = 1.0e-7
 
 const prefix = '../../'

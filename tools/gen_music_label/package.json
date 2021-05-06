@@ -5,7 +5,8 @@
   "author": "Hikaru Terazono (3c1u) <3c1u@tohkani.com>",
   "license": "MIT",
   "scripts": {
-    "run-script": "ts-node --project ./tsconfig.json ./src/index.ts"
+    "run-script": "ts-node --project ./tsconfig.json ./src/index.ts",
+    "inference-label": "ts-node --project ./tsconfig.json ./src/inference_label.ts"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",
