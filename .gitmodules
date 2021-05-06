@@ -1,0 +1,6 @@
+[submodule "thirdparty/HiFiSinger"]
+	path = thirdparty/HiFiSinger
+	url = https://github.com/CODEJIN/HiFiSinger.git
+[submodule "thirdparty/PWGAN_for_HiFiSinger"]
+	path = thirdparty/PWGAN_for_HiFiSinger
+	url = https://github.com/CODEJIN/PWGAN_for_HiFiSinger
