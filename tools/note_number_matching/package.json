@@ -1,0 +1,15 @@
+{
+  "name": "note_number_matching",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "Hikaru Terazono (3c1u) <3c1u@tohkani.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^15.0.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "run-script": "ts-node --project ./tsconfig.json ./src/index.ts"
+  }
+}
