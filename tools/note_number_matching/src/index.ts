@@ -28,7 +28,7 @@ const parseMonoLabels = (labels: string): Label[] => {
 
 const parseMonoLabelsWithNote = (labels: string): Label[] => {
   return labels
-    .split('\n')
+    .split(/\r?\n/)
     .filter(v => Boolean(v))
     .map(v => {
       const [start, lyrics, nn] = v.split(',')
@@ -72,7 +72,9 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
     for (let i = 0; i < nMono; ++i) {
       const dmin = Math.min(dp[i][j + 1], dp[i + 1][j], dp[i][j])
       const dLyrics = monoLabel[i].lyrics === monoNoteLabel[j].lyrics ? 0 : 1
-      const dTime = useTimeAsDistance ? Math.abs(monoLabel[i].startTime - monoNoteLabel[j].startTime) : 0
+      const dTime = useTimeAsDistance
+        ? Math.abs(monoLabel[i].startTime - monoNoteLabel[j].startTime)
+        : 0
       const d = dTime + dLyrics * 10.0
 
       dp[i + 1][j + 1] = d + dmin
@@ -179,7 +181,10 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
   // console.log(`${id}`)
 
   const outputPath = `${prefix}/mono_label_aligned/${idPadded}.txt`
-  await fs.writeFile(outputPath, monoLabel.map(l => `${l.startTime},${l.lyrics},${l.noteNumber}`).join('\n'))
+  await fs.writeFile(
+    outputPath,
+    monoLabel.map(l => `${l.startTime},${l.lyrics},${l.noteNumber}`).join('\n'),
+  )
 }
 
 const main = async () => {
