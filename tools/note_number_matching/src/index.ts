@@ -2,7 +2,7 @@ import * as fs from 'fs/promises'
 
 const datasetPrefix = '../..'
 const nonVoicedLabel = ['pau', 'br']
-const useTimeAsDistance = false
+const useTimeAsDistance = true
 
 interface Label {
   startTime: number
@@ -13,7 +13,7 @@ interface Label {
 
 const parseMonoLabels = (labels: string): Label[] => {
   return labels
-    .split('\n')
+    .split(/\r?\n/)
     .filter(v => Boolean(v))
     .map(v => {
       const [start, , lyrics] = v.split(' ')
