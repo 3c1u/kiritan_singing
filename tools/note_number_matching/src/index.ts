@@ -1,7 +1,8 @@
 import * as fs from 'fs/promises'
 
 const datasetPrefix = '../..'
-const nonVoicedLabel = ['pau']
+const nonVoicedLabel = ['pau', 'br']
+const useTimeAsDistance = false
 
 interface Label {
   startTime: number
@@ -70,15 +71,13 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
   for (let j = 0; j < nNote; ++j) {
     for (let i = 0; i < nMono; ++i) {
       const dmin = Math.min(dp[i][j + 1], dp[i + 1][j], dp[i][j])
-      const d = monoLabel[i].lyrics === monoNoteLabel[j].lyrics ? 0 : 1
+      const dLyrics = monoLabel[i].lyrics === monoNoteLabel[j].lyrics ? 0 : 1
+      const dTime = useTimeAsDistance ? Math.abs(monoLabel[i].startTime - monoNoteLabel[j].startTime) : 0
+      const d = dTime + dLyrics * 10.0
 
       dp[i + 1][j + 1] = d + dmin
     }
   }
-
-  process.stdout.write('\n             ')
-  process.stdout.write(monoNoteLabel.map(v => v.lyrics.padStart(4)).join(' '))
-  process.stdout.write('\n')
 
   let y_note = nNote
   let x_mono = nMono
@@ -92,7 +91,7 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
       if (monoLabel[x_mono - 1].noteNumber === undefined) {
         const label = monoLabel[x_mono - 1]
         const labelWithNote = monoNoteLabel[y_note - 1]
-  
+
         label.noteNumber = labelWithNote.noteNumber
         label.exactMatch = labelWithNote.lyrics === label.lyrics
       }
@@ -105,7 +104,7 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
       if (!monoLabel[x_mono - 1].exactMatch) {
         const label = monoLabel[x_mono - 1]
         const labelWithNote = monoNoteLabel[y_note - 1]
-  
+
         label.noteNumber = labelWithNote.noteNumber
         label.exactMatch = labelWithNote.lyrics === label.lyrics
       }
@@ -119,7 +118,7 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
       if (!monoLabel[x_mono - 1].exactMatch) {
         const label = monoLabel[x_mono - 1]
         const labelWithNote = monoNoteLabel[y_note - 1]
-  
+
         label.noteNumber = labelWithNote.noteNumber
         label.exactMatch = labelWithNote.lyrics === label.lyrics
       }
@@ -139,6 +138,7 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
     y_note--
   }
 
+  let shutUp = false
   // fill unknown note with zeros
   monoLabel.forEach(v => {
     if (nonVoicedLabel.includes(v.lyrics)) {
@@ -146,10 +146,18 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
       return
     }
 
+    if (!shutUp && v.noteNumber === undefined) {
+      console.error(`[${id}] encountered ?? at ${v.startTime} -> ${v.lyrics}`)
+    }
+
     v.noteNumber = v.noteNumber ?? 0
   })
 
-  // for debug:
+  /*
+  process.stdout.write('\n             ')
+  process.stdout.write(monoNoteLabel.map(v => v.lyrics.padStart(4)).join(' '))
+  process.stdout.write('\n')
+
   for (let i = 0; i <= nMono; ++i) {
     const p = nMono - i
     const ly = p == 0 ? '' : monoLabel[p - 1].lyrics
@@ -166,10 +174,18 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
   
     process.stdout.write('\n')
   }
+  */
+
+  // console.log(`${id}`)
+
+  const outputPath = `${prefix}/mono_label_aligned/${idPadded}.txt`
+  await fs.writeFile(outputPath, monoLabel.map(l => `${l.startTime},${l.lyrics},${l.noteNumber}`).join('\n'))
 }
 
 const main = async () => {
-  await matchLabels(0, './test')
+  await Promise.all(
+    Array.from(Array(50), (_, i) => matchLabels(i + 1, '../..')),
+  )
 }
 
 main()
