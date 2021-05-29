@@ -6,6 +6,7 @@ const useTimeAsDistance = true
 
 interface Label {
   startTime: number
+  endTime?: number
   lyrics: string
   noteNumber?: number
   exactMatch?: boolean
@@ -16,11 +17,13 @@ const parseMonoLabels = (labels: string): Label[] => {
     .split(/\r?\n/)
     .filter(v => Boolean(v))
     .map(v => {
-      const [start, , lyrics] = v.split(' ')
+      const [start, end, lyrics] = v.split(' ')
       const startTime = parseFloat(start)
+      const endTime = parseFloat(end)
 
       return {
         startTime,
+        endTime,
         lyrics,
       }
     })
@@ -183,7 +186,7 @@ const matchLabels = async (id: number, prefix: string = datasetPrefix) => {
   const outputPath = `${prefix}/mono_label_aligned/${idPadded}.txt`
   await fs.writeFile(
     outputPath,
-    monoLabel.map(l => `${l.startTime},${l.lyrics},${l.noteNumber}`).join('\n'),
+    monoLabel.map(l => `${l.startTime},${l.endTime},${l.lyrics},${l.noteNumber}`).join('\n'),
   )
 }
 
